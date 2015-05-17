@@ -36,8 +36,9 @@ function ret = Simplex(A, c, m, n, x, index, compl, Binv )
       c_ = c' - p * A;
 
       printf("\nCustos reduzidos: \n");
+      complPrint = sort(compl);
       for (i = 1:n-m)
-         printf("%d   %5f\n", compl(i), c_(compl(i)));
+         printf("%d   %5f\n", complPrint(i), c_(complPrint(i)));
       endfor
 
       if (c_ >= 0)
@@ -85,6 +86,7 @@ function ret = Simplex(A, c, m, n, x, index, compl, Binv )
       x(j) = theta;
 
       Binv = NewBinv(Binv, u, imin, m);
+      compl(j) = index(imin);
       index(imin) = j;
 
       iteration = iteration + 1;
