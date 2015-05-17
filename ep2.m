@@ -35,7 +35,7 @@ function ret = Simplex(A, c, m, n, x, index, Binv )
       c_ = c' - p * A;
 
       printf("\nCustos reduzidos: \n");
-      compl = FindCompl(m, n, x);
+      compl = FindCompl(n, index);
       complPrint = sort(compl);
       for (i = 1:n-m)
          printf("%d   %5f\n", complPrint(i), c_(complPrint(i)));
@@ -84,6 +84,7 @@ function ret = Simplex(A, c, m, n, x, index, Binv )
          x(index(i)) = x(index(i)) - u(i) * theta;
       endfor
       x(j) = theta;
+      x(index(imin)) = 0; %evitando que aproximações erradas comprometam o funcionamento do programa
 
       Binv = NewBinv(Binv, u, imin, m);
       index(imin) = j;
@@ -96,7 +97,7 @@ endfunction
 
 % Constrói o vetor contendo os índices das variáveis básicas
 function ret = FindIndex(m, n, x)
-   index = zeros(m,1);
+   index = zeros(m, 1);
    k = 1;
    for (i = 1:n)
       if (x(i) != 0)
@@ -109,15 +110,12 @@ endfunction
 
 % Constrói o vetor contendo os índices das variáveis não básicas.
 % Este vetor será usado apenas para exibir a direção das variáveis não básicas.
-function ret = FindCompl(m, n, x)
-   compl = zeros(n-m,1);
-   k = 1;
+function ret = FindCompl(n, index)
+   vectorN = zeros(n, 1);
    for (i = 1:n)
-      if (x(i) == 0)
-         compl(k) = i;
-         k = k + 1;
-      endif
+        vectorN(i) = i;
    endfor
+   compl = setdiff (vectorN, index);
    ret = compl;
 endfunction
 
