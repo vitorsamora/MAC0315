@@ -1,11 +1,10 @@
 % Função principal e pré-processamento
 function ret = simplex(A, b, c, m, n, x)
    index = FindIndex(m, n, x);
-   compl = FindCompl(m, n, x);
 
    B = BasisMatrix(A, index, m);
    Binv = inv(B);
-   ret = Simplex(A, c, m, n, x, index, compl, Binv);
+   ret = Simplex(A, c, m, n, x, index, Binv);
 
    % Exibe as informações finais
    if (ret(1) == 0)
@@ -20,7 +19,7 @@ function ret = simplex(A, b, c, m, n, x)
 endfunction
 
 % Método simplex revisado
-function ret = Simplex(A, c, m, n, x, index, compl, Binv )
+function ret = Simplex(A, c, m, n, x, index, Binv )
    iteration = 0;
    while (true)
       printf("\nIterando %d\n", iteration);
@@ -36,6 +35,7 @@ function ret = Simplex(A, c, m, n, x, index, compl, Binv )
       c_ = c' - p * A;
 
       printf("\nCustos reduzidos: \n");
+      compl = FindCompl(m, n, x);
       complPrint = sort(compl);
       for (i = 1:n-m)
          printf("%d   %5f\n", complPrint(i), c_(complPrint(i)));
@@ -75,7 +75,7 @@ function ret = Simplex(A, c, m, n, x, index, compl, Binv )
       printf("\nEntra na base: %d\n", j);
       printf("\nDireção:\n");
       for (i = 1:m)
-         printf("%d   %5f\n", index(i), d(index(i)));
+         printf("%d   %5f\n", indexPrint(i), d(indexPrint(i)));
       endfor
       printf("\nTheta*: %5f\n", theta);
       printf("\nSai da base: %d\n", index(imin));
@@ -86,7 +86,6 @@ function ret = Simplex(A, c, m, n, x, index, compl, Binv )
       x(j) = theta;
 
       Binv = NewBinv(Binv, u, imin, m);
-      compl(j) = index(imin);
       index(imin) = j;
 
       iteration = iteration + 1;
